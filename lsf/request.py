@@ -1,5 +1,7 @@
 from . import bindings
 from . import job
+from .options import set_options
+from .resources import set_resources
 import logging
 
 
@@ -15,15 +17,7 @@ def submit(command_line, options=None, resources=None):
 
     request.command = str(' '.join("'%s'" % word for word in command_line))
 
-    _set_options(request, options)
-    _set_resources(request, resources)
+    set_options(request, options)
+    set_resources(request, resources)
 
     return job.Job(bindings.submit_job(request, reply))
-
-
-def _set_options(request, options):
-    pass
-
-
-def _set_resources(request, resources):
-    pass
