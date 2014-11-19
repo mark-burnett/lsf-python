@@ -4,6 +4,7 @@ import abc
 
 __all__ = [
     'InvalidData',
+    'InvalidJob',
     'InvalidOption',
     'InvalidResource',
     'InvalidRlimit',
@@ -28,6 +29,10 @@ class InvalidData(LSFException):
     @abc.abstractproperty
     def header_text(cls):
         pass  # pragma: no cover
+
+
+class InvalidJob(InvalidData):
+    header_text = 'job'
 
 
 class InvalidOption(InvalidData):
