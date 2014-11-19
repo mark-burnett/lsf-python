@@ -55,3 +55,13 @@ class OptionTest(unittest.TestCase):
                 {'numProcessors': 4, 'maxNumProcessors': 6})
         self.assertEqual(request.numProcessors, 4)
         self.assertEqual(request.maxNumProcessors, 6)
+
+    def test_pre_post_exec(self):
+        request = self.mock_request()
+
+        options.set_options(request,
+                {'preExecCmd': 'pretest', 'postExecCmd': 'posttest'})
+        self.assertEqual(request.options, api.SUB_PRE_EXEC)
+        self.assertEqual(request.preExecCmd, 'pretest')
+        self.assertEqual(request.options3, api.SUB3_POST_EXEC)
+        self.assertEqual(request.postExecCmd, 'posttest')

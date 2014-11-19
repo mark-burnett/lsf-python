@@ -39,6 +39,8 @@ _OPTIONS = {o.name: o for o in
         Option('maxNumProcessors', cast_with=int),
         Option('numProcessors', cast_with=int),
         Option('outFile', flag=api.SUB_OUT_FILE),
+        Option('preExecCmd', flag=api.SUB_PRE_EXEC),
+        Option('postExecCmd', flag=api.SUB3_POST_EXEC, flag_group='options3'),
         Option('projectName', flag=api.SUB_PROJECT_NAME),
         Option('queue', flag=api.SUB_QUEUE),
         Option('termTime', cast_with=int),
