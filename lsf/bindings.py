@@ -33,12 +33,17 @@ def init():
         raise RuntimeError('Failed lsb_init, errno = %d' % api.lsb_errno())
 
 
-def submit_job(request, reply):
+def submit_job(request, reply, quiet=True):
     try:
+        if quiet:
+            os.environ['BSUB_QUIET'] = '1'
         job_id = api.lsb_submit(request, reply)
     except:
         LOG.exception('Failed to submit LSF job')
         raise
+    finally:
+        if 'BSUB_QUIET' in os.environ:
+            del os.environ['BSUB_QUIET']
 
     if job_id > 0:
         LOG.debug('Successfully submitted LSF job: %s', job_id)
