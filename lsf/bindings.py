@@ -1,5 +1,7 @@
+from . import config
 from pythonlsf import lsf as api
 import logging
+import os
 
 
 __all__ = [
