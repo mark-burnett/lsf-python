@@ -15,7 +15,6 @@ LOG = logging.getLogger(__name__)
 def submit(command_line, options=None, rlimits=None, rusage=None, select=None,
         span=None):
     bindings.init()
-    reply = bindings.create_reply()
     request = bindings.create_empty_request()
 
     set_command(request, command_line)
@@ -23,7 +22,7 @@ def submit(command_line, options=None, rlimits=None, rusage=None, select=None,
     set_rlimits(request, rlimits or {})
     set_resources(request, rusage=rusage, select=select, span=span)
 
-    return job.Job(bindings.submit_job(request, reply))
+    return job.Job(bindings.submit_job(request))
 
 
 def set_command(request, command_line):
