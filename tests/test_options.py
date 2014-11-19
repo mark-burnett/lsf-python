@@ -47,3 +47,11 @@ class OptionTest(unittest.TestCase):
         options.set_options(request, {'beginTime': '123', 'termTime': '456'})
         self.assertEqual(request.beginTime, 123)
         self.assertEqual(request.termTime, 456)
+
+    def test_processors(self):
+        request = self.mock_request()
+
+        options.set_options(request,
+                {'numProcessors': 4, 'maxNumProcessors': 6})
+        self.assertEqual(request.numProcessors, 4)
+        self.assertEqual(request.maxNumProcessors, 6)
