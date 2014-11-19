@@ -7,7 +7,6 @@ import os
 
 __all__ = [
     'create_empty_request',
-    'init',
     'submit_job',
 ]
 
@@ -16,6 +15,7 @@ LOG = logging.getLogger(__name__)
 
 
 def create_empty_request():
+    init()
     try:
         request = api.submit()
     except:
@@ -30,6 +30,7 @@ def create_empty_request():
 
 
 def create_reply():
+    init()
     try:
         return api.submitReply()
     except:
@@ -37,13 +38,20 @@ def create_reply():
         raise LSFBindingException('Failed to create LSB Reply object')
 
 
+_ALREADY_INIT = False
 def init():
+    global _ALREADY_INIT
+    if _ALREADY_INIT:
+        return
+
     init_code = api.lsb_init(None)
     if init_code != 0:
         raise LSFBindingException('Failed lsb_init')
+    _ALREADY_INIT = True
 
 
 def submit_job(request, quiet=True):
+    init()
     reply = create_reply()
 
     try:

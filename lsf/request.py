@@ -14,7 +14,6 @@ LOG = logging.getLogger(__name__)
 
 def submit(command_line, options=None, rlimits=None, rusage=None, select=None,
         span=None):
-    bindings.init()
     request = bindings.create_empty_request()
 
     set_command(request, command_line)
