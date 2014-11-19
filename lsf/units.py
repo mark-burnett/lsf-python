@@ -1,3 +1,4 @@
+from .exceptions import InvalidUnit
 import abc
 
 
@@ -45,14 +46,12 @@ def _convert_memory_value(src_value, src_units, dest_units):
     try:
         dest_index = _MEMORY_UNITS.index(dest_units)
     except ValueError:
-        raise RuntimeError('Illegal destination memory unit (%s) not in %s'
-                % (dest_units, _MEMORY_UNITS))
+        raise InvalidUnit(dest_units)
 
     try:
         src_index = _MEMORY_UNITS.index(src_units)
     except ValueError:
-        raise RuntimeError('Illegal source memory unit (%s) not in %s'
-                % (src_units, _MEMORY_UNITS))
+        raise InvalidUnit(src_units)
 
     if src_index > dest_index:
         dest_value = int(src_value) << (10 * (src_index - dest_index))

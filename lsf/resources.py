@@ -1,5 +1,6 @@
 from . import config
 from . import units
+from .exceptions import InvalidResource
 from pythonlsf import lsf as api
 import logging
 
@@ -69,7 +70,7 @@ def get_res_req_component(data, template, available_components):
         try:
             components.append(available_components[name].string_for(value))
         except KeyError:
-            raise RuntimeError('Could not find component "%s"' % name)
+            raise InvalidResource(name)
 
     if components:
         return [template % ''.join(components)]

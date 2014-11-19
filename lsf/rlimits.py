@@ -1,5 +1,6 @@
 from . import config
 from . import units
+from .exceptions import InvalidRlimit
 from pythonlsf import lsf as api
 import logging
 
@@ -48,6 +49,6 @@ def set_rlimits(request, rlimits):
         try:
             _RLIMITS[name].set_limit(rlimits_array, value)
         except KeyError:
-            raise RuntimeError('Could not find rlimit resource "%s"' % name)
+            raise InvalidRlimit(name)
 
     request.rLimits = rlimits_array

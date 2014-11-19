@@ -1,4 +1,5 @@
 from . import config
+from .exceptions import LSFBindingException
 from pythonlsf import lsf as api
 import logging
 import os
@@ -15,7 +16,12 @@ LOG = logging.getLogger(__name__)
 
 
 def create_empty_request():
-    request = api.submit()
+    try:
+        request = api.submit()
+    except:
+        LOG.exception('Failed to create empty request')
+        raise LSFBindingException('Caught exception in submit')
+
     request.options = 0
     request.options2 = 0
     request.options3 = 0
@@ -23,21 +29,30 @@ def create_empty_request():
     return request
 
 
+def create_reply():
+    try:
+        return api.submitReply()
+    except:
+        LOG.exception('Caught exception in submitReply')
+        raise LSFBindingException('Failed to create LSB Reply object')
+
+
 def init():
     init_code = api.lsb_init(None)
-    if init_code > 0:
-        raise RuntimeError('Failed lsb_init, errno = %d' % api.lsb_errno())
+    if init_code != 0:
+        raise LSFBindingException('Failed lsb_init')
 
 
 def submit_job(request, quiet=True):
+    reply = create_reply()
+
     try:
-        reply = api.submitReply()
         if quiet:
             os.environ['BSUB_QUIET'] = '1'
         job_id = api.lsb_submit(request, reply)
     except:
         LOG.exception('Failed to submit LSF job')
-        raise
+        raise LSFBindingException('Caught exception in lsb_submit')
     finally:
         if 'BSUB_QUIET' in os.environ:
             del os.environ['BSUB_QUIET']
@@ -47,6 +62,5 @@ def submit_job(request, quiet=True):
         return job_id
 
     else:
-        LOG.error('Failed to submit LSF job, return value = (%s), err = "%s"',
-                job_id, api.lsb_sysmsg())
-        raise RuntimeError('Failed to submit LSF job')
+        LOG.debug('Failed to submit LSF job, return value = (%s)', job_id)
+        raise LSFBindingException('Failed to submit LSF job')

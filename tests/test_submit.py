@@ -8,5 +8,5 @@ class SubmitTests(unittest.TestCase):
         self.assertGreater(job.job_id, 0)
 
     def test_submit_to_illegal_queue(self):
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(lsf.exceptions.LSFBindingException):
             lsf.submit([u'ls'], options={'queue': 'nonexistantqueuefortesting'})

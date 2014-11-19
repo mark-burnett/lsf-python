@@ -1,3 +1,4 @@
+from .exceptions import InvalidOption
 from pythonlsf import lsf as api
 import logging
 
@@ -52,6 +53,6 @@ def set_options(request, options):
     for name, value in options.iteritems():
         option = _OPTIONS.get(name)
         if not option:
-            raise RuntimeError('Invalid option %s' % name)
+            raise InvalidOption(name)
 
         option.set_option(request, value)

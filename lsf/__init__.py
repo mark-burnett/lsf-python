@@ -1,3 +1,4 @@
+from . import exceptions
 from .bindings import init
 from .job import *
 from .request import *
