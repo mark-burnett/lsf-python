@@ -26,12 +26,10 @@ class Job(object):
 
         result = {
             'command': jobinfo.submit.command,
-            'statuses': _translate_status(jobinfo.status),
+            'statuses': translate_status(jobinfo.status),
         }
 
-        options = get_options(jobinfo.submit)
-        if options:
-            result['options'] = options
+        result['options'] = get_options(jobinfo.submit)
 
         return result
 
@@ -50,7 +48,7 @@ _STATUSES = {
      0x8000: 'RUNKWN',
     0x10000: 'UNKWN',
 }
-def _translate_status(status_code):
+def translate_status(status_code):
     statuses = set()
     for bitmask, name in _STATUSES.iteritems():
         if bitmask & status_code:

@@ -21,9 +21,6 @@ class Option(object):
         self.flag_group = flag_group
 
     def set_value(self, request, value):
-        if value is None:
-            return
-
         cast_value = self.cast_with(value)
         setattr(request, self.name, cast_value)
 

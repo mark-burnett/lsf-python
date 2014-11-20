@@ -1,3 +1,4 @@
+from lsf import job
 import lsf
 import time
 import unittest
@@ -38,3 +39,6 @@ class JobTests(unittest.TestCase):
             'maxNumProcessors': 1,
         }
         self.assertDictContainsSubset(expected_options, job_dict['options'])
+
+    def test_translate_null_status(self):
+        self.assertEqual(job.translate_status(0), ['NULL'])

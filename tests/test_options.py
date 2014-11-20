@@ -1,4 +1,4 @@
-from lsf import bindings, options
+from lsf import bindings, exceptions, options
 from pythonlsf import lsf as api
 import mock
 import unittest
@@ -80,3 +80,9 @@ class OptionTest(unittest.TestCase):
 
         final_values = options.get_options(request)
         self.assertDictContainsSubset(initial_values, final_values)
+
+    def test_invalid_option(self):
+        request = self.mock_request()
+
+        with self.assertRaises(exceptions.InvalidOption):
+            options.set_options(request, {'invalidOption': 'foo'})

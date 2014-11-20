@@ -1,4 +1,4 @@
-from lsf import rlimits
+from lsf import exceptions, rlimits
 from pythonlsf import lsf as api
 import mock
 import unittest
@@ -22,6 +22,12 @@ class RLimitsTest(unittest.TestCase):
 
         for v in request.rLimits:
             self.assertEqual(v, api.DEFAULT_RLIMIT)
+
+    def test_invalid_rlimits(self):
+        request = self.mock_request()
+
+        with self.assertRaises(exceptions.InvalidRlimit):
+            rlimits.set_rlimits(request, {'invalidRlimit': 1024})
 
     def mock_request(self):
         request = mock.Mock()
