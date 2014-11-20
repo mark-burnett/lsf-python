@@ -6,9 +6,7 @@ __all__ = [
     'InvalidData',
     'InvalidJob',
     'InvalidOption',
-    'InvalidResource',
     'InvalidRlimit',
-    'InvalidUnit',
     'LSFBindingException',
     'LSFException',
 ]
@@ -39,16 +37,8 @@ class InvalidOption(InvalidData):
     header_text = 'option'
 
 
-class InvalidResource(InvalidData):
-    header_text = 'resource'
-
-
 class InvalidRlimit(InvalidData):
     header_text = 'rLimit'
-
-
-class InvalidUnit(InvalidData):
-    header_text = 'unit'
 
 
 class LSFBindingException(LSFException):

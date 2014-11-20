@@ -1,5 +1,3 @@
-from . import config
-from . import units
 from .exceptions import InvalidRlimit
 from pythonlsf import lsf as api
 import logging
@@ -12,33 +10,23 @@ LOG = logging.getLogger(__name__)
 
 
 class Limit(object):
-    def __init__(self, name, option_index, converter=None):
+    def __init__(self, name, option_index):
         self.name = name
         self.option_index = option_index
-        if converter:
-            self.converter = converter
-        else:
-            self.converter = units.NullConverter()
 
     def set_limit(self, rlimits, value):
-        rlimits[self.option_index] = self.converter(value)
+        rlimits[self.option_index] = value
 
 
 _RLIMITS = {
     o.name: o for o in [
-        Limit('cpuTime', api.LSF_RLIMIT_CPU, units.NullConverter()),
-        Limit('RSS', api.LSF_RLIMIT_RSS,
-            units.MemoryConverter(from_=config.API_MEMORY_UNITS,
-                to=config.LIMIT_RSS_UNITS)),
+        Limit('cpuTime', api.LSF_RLIMIT_CPU),
+        Limit('RSS', api.LSF_RLIMIT_RSS),
         Limit('openFiles', api.LSF_RLIMIT_NOFILE),
         Limit('processes', api.LSF_RLIMIT_PROCESS),
-        Limit('stack', api.LSF_RLIMIT_STACK,
-            units.MemoryConverter(from_=config.API_MEMORY_UNITS,
-                to=config.LIMIT_STACK_UNITS)),
+        Limit('stack', api.LSF_RLIMIT_STACK),
         Limit('threads', api.LSF_RLIMIT_THREAD),
-        Limit('virtualMemory', api.LSF_RLIMIT_VMEM,
-            units.MemoryConverter(from_=config.API_MEMORY_UNITS,
-                to=config.LIMIT_VMEM_UNITS)),
+        Limit('virtualMemory', api.LSF_RLIMIT_VMEM),
     ]
 }
 

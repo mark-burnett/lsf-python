@@ -1,4 +1,3 @@
-from . import config
 from .exceptions import InvalidJob, LSFBindingException
 from pythonlsf import lsf as api
 import logging

@@ -8,7 +8,7 @@ class RLimitsTest(unittest.TestCase):
     def test_limits(self):
         request = self.mock_request()
 
-        rlimits.set_rlimits(request, {'RSS': 1})
+        rlimits.set_rlimits(request, {'RSS': 1024})
 
         self.assertEqual(request.rLimits[api.LSF_RLIMIT_RSS], 1024)
 

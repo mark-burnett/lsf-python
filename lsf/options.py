@@ -51,6 +51,7 @@ _OPTIONS = {o.name: o for o in
         Option('postExecCmd', flag=api.SUB3_POST_EXEC, flag_group='options3'),
         Option('projectName', flag=api.SUB_PROJECT_NAME),
         Option('queue', flag=api.SUB_QUEUE),
+        Option('resReq', flag=api.SUB_RES_REQ),
         Option('termTime', cast_with=int),
     ]
 }

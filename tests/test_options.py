@@ -22,6 +22,7 @@ class OptionTest(unittest.TestCase):
             'outFile': api.SUB_OUT_FILE,
             'projectName': api.SUB_PROJECT_NAME,
             'queue': api.SUB_QUEUE,
+            'resReq': api.SUB_RES_REQ,
         }
 
         for name, flag in test_options.iteritems():
