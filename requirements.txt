@@ -1,1 +1,1 @@
--e git+https://github.com/moschlar/pythonlsf.git#egg=pythonlsf
+-e git+https://github.com/mark-burnett/pythonlsf.git#egg=pythonlsf
