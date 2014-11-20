@@ -2,6 +2,7 @@ from . import bindings
 from .options import get_options
 from .rlimits import get_rlimits
 import logging
+import signal
 import string
 
 
@@ -36,7 +37,7 @@ class Job(object):
 
         return result
 
-    def kill(self, signum=9):
+    def kill(self, signum=signal.SIGKILL):
         bindings.kill_job(self.job_id, signum)
 
 

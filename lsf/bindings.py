@@ -2,6 +2,7 @@ from .exceptions import InvalidJob, LSFBindingException
 from pythonlsf import lsf as api
 import logging
 import os
+import signal
 
 
 __all__ = [
@@ -51,7 +52,7 @@ def init():
     _ALREADY_INIT = True
 
 
-def kill_job(job_id, signum=9):
+def kill_job(job_id, signum=signal.SIGKILL):
     init()
 
     if 0 != api.lsb_signaljob(job_id, signum):
