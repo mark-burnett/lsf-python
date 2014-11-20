@@ -24,6 +24,7 @@ class Job(object):
     @property
     def as_dict(self):
         jobinfo = bindings.get_job_info(self.job_id)
+        assert self.job_id == jobinfo.jobId
 
         result = {
             'jobId': self.job_id,

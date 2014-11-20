@@ -26,6 +26,8 @@ class JobTests(unittest.TestCase):
         self._verify_job_dict_statuses(job_dict['statuses'])
         self._verify_job_dict_submit_portion(job_dict['submit'])
 
+        self._verify_job_dict_additional_fields(job_dict)
+
     def _verify_job_dict_statuses(self, statuses):
         self.assertGreater(len(statuses), 0)
         possible_valid_statuses = {'DONE', 'PDONE', 'PEND', 'RUN'}
