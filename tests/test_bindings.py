@@ -88,3 +88,9 @@ class BindingErrorTests(unittest.TestCase):
         with mock.patch('lsf.bindings.api.lsb_submit') as p:
             p.return_value = 1
             self.assertEqual(lsf.bindings.submit_job(None, quiet=False), 1)
+
+    def test_kill_job_raises_binding_error_on_failure(self):
+        with mock.patch('lsf.bindings.api.lsb_signaljob') as p:
+            p.return_value = -1
+            with self.assertRaises(lsf.exceptions.LSFBindingException):
+                lsf.bindings.kill_job(None)

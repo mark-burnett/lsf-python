@@ -7,6 +7,7 @@ import os
 __all__ = [
     'create_empty_request',
     'get_job_info',
+    'kill_job',
     'submit_job',
 ]
 
@@ -48,6 +49,14 @@ def init():
     if init_code != 0:
         raise LSFBindingException('Failed lsb_init')
     _ALREADY_INIT = True
+
+
+def kill_job(job_id, signum=9):
+    init()
+
+    if 0 != api.lsb_signaljob(job_id, signum):
+        raise LSFBindingException('Failed to signal job %s with %s'
+                % (job_id, signum))
 
 
 def submit_job(request, quiet=True):

@@ -36,6 +36,9 @@ class Job(object):
 
         return result
 
+    def kill(self, signum=9):
+        bindings.kill_job(self.job_id, signum)
+
 
 _STATUSES = {
         0x1: 'PEND',

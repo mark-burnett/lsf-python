@@ -8,7 +8,7 @@ _MAX_RETRIES = 10
 _POLLING_PERIOD = 3
 
 
-class JobTests(unittest.TestCase):
+class JobStatusTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.job = lsf.submit('ls',
@@ -66,6 +66,16 @@ class JobTests(unittest.TestCase):
 
     def test_translate_null_status(self):
         self.assertEqual(job.translate_status(0), ['NULL'])
+
+
+class JobKillTests(unittest.TestCase):
+    def test_kill_sleep_job(self):
+        job = lsf.submit('sleep 100')
+
+        job.kill()
+
+        job_dict = _get_job_dict(job)
+        self.assertIn('EXIT', job_dict['statuses'])
 
 
 def _get_job_dict(job):
