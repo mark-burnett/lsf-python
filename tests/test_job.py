@@ -5,7 +5,6 @@ import unittest
 
 
 _MAX_RETRIES = 10
-_INITIAL_WAIT = 5
 _POLLING_PERIOD = 3
 
 
@@ -14,7 +13,7 @@ class JobTests(unittest.TestCase):
     def setUpClass(cls):
         cls.job = lsf.submit('ls',
                 options={'numProcessors': 1, 'maxNumProcessors': 1},
-                rlimits={'cpuTime': 1, 'threads': 1},
+                rlimits={'threads': 1},
                 )
 
     def test_jobs_should_compare_by_ids(self):
@@ -43,17 +42,24 @@ class JobTests(unittest.TestCase):
         self.assertDictContainsSubset(expected_options, request_data['options'])
 
         expected_rlimits = {
-            'cpuTime': 1,
             'threads': 1,
         }
         self.assertDictContainsSubset(expected_rlimits, request_data['rlimits'])
+
+    def _verify_job_dict_additional_fields(self, job_dict):
+        expected_additional_fields = [
+            'jobId',
+        ]
+
+        for expected_field in expected_additional_fields:
+            self.assertIsNotNone(job_dict[expected_field])
+
 
     def test_translate_null_status(self):
         self.assertEqual(job.translate_status(0), ['NULL'])
 
 
 def _get_job_dict(job):
-    time.sleep(_INITIAL_WAIT)
     for attempt in xrange(_MAX_RETRIES):
         try:
             return job.as_dict
