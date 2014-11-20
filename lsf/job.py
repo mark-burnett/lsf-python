@@ -1,4 +1,5 @@
 from . import bindings
+from .options import get_options
 import logging
 
 
@@ -22,10 +23,17 @@ class Job(object):
     @property
     def as_dict(self):
         jobinfo = bindings.get_job_info(self.job_id)
-        return {
+
+        result = {
             'command': jobinfo.submit.command,
             'statuses': _translate_status(jobinfo.status),
         }
+
+        options = get_options(jobinfo.submit)
+        if options:
+            result['options'] = options
+
+        return result
 
 
 _STATUSES = {

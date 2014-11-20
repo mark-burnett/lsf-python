@@ -3,7 +3,7 @@ from pythonlsf import lsf as api
 import logging
 
 
-__all__ = ['set_options']
+__all__ = ['get_options', 'set_options']
 
 
 LOG = logging.getLogger(__name__)
@@ -13,10 +13,14 @@ class Option(object):
     def __init__(self, name, cast_with=str, flag=None, flag_group='options'):
         self.name = str(name)
         self.cast_with = cast_with
-        self.flag = flag
+
+        if flag is not None:
+            self.flag = int(flag)
+        else:
+            self.flag = None
         self.flag_group = flag_group
 
-    def set_option(self, request, value):
+    def set_value(self, request, value):
         if value is None:
             return
 
@@ -25,7 +29,11 @@ class Option(object):
 
         if self.flag is not None:
             options = getattr(request, self.flag_group)
-            setattr(request, self.flag_group, options | int(self.flag))
+            setattr(request, self.flag_group, options | self.flag)
+
+    def get_value(self, request):
+        if (not self.flag) or (getattr(request, self.flag_group) & self.flag):
+            return getattr(request, self.name)
 
 
 _OPTIONS = {o.name: o for o in
@@ -48,6 +56,15 @@ _OPTIONS = {o.name: o for o in
 }
 
 
+def get_options(submit_struct):
+    result = {}
+    for name, option in _OPTIONS.iteritems():
+        value = option.get_value(submit_struct)
+        if value is not None:
+            result[name] = value
+    return result
+
+
 def set_options(request, options):
     if not options:
         return
@@ -57,4 +74,4 @@ def set_options(request, options):
         if not option:
             raise InvalidOption(name)
 
-        option.set_option(request, value)
+        option.set_value(request, value)

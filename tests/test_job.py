@@ -4,12 +4,14 @@ import unittest
 
 
 _MAX_RETRIES = 10
+_POLLING_PERIOD = 3
 
 
 class JobTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.job = lsf.submit('ls')
+        cls.job = lsf.submit('ls',
+                options={'numProcessors': 1, 'maxNumProcessors': 1})
 
     def test_jobs_should_compare_by_ids(self):
         job2 = lsf.get_job(self.job.job_id)
@@ -22,12 +24,17 @@ class JobTests(unittest.TestCase):
                 job_dict = self.job.as_dict
                 break
             except lsf.exceptions.InvalidJob:
-                time.sleep(5)
+                time.sleep(_POLLING_PERIOD)
+
+        self.assertEqual(job_dict['command'], 'ls')
 
         self.assertGreater(len(job_dict['statuses']), 0)
-
         possible_valid_statuses = {'DONE', 'PDONE', 'PEND', 'RUN'}
         for status in job_dict['statuses']:
             self.assertIn(status, possible_valid_statuses)
 
-        self.assertEqual(job_dict['command'], 'ls')
+        expected_options = {
+            'numProcessors': 1,
+            'maxNumProcessors': 1,
+        }
+        self.assertDictContainsSubset(expected_options, job_dict['options'])

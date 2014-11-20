@@ -1,4 +1,4 @@
-from lsf import options
+from lsf import bindings, options
 from pythonlsf import lsf as api
 import mock
 import unittest
@@ -65,3 +65,17 @@ class OptionTest(unittest.TestCase):
         self.assertEqual(request.preExecCmd, 'pretest')
         self.assertEqual(request.options3, api.SUB3_POST_EXEC)
         self.assertEqual(request.postExecCmd, 'posttest')
+
+    def test_round_trip(self):
+        request = bindings.create_empty_request()
+
+        initial_values = {
+            'preExecCmd': 'pretest',
+            'queue': 'somequeue',
+            'inFile': 'myinputfile',
+            'projectName': 'foo',
+        }
+        options.set_options(request, initial_values)
+
+        final_values = options.get_options(request)
+        self.assertDictContainsSubset(initial_values, final_values)
