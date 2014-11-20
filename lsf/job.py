@@ -1,5 +1,6 @@
 from . import bindings
 from .options import get_options
+from .rlimits import get_rlimits
 import logging
 
 
@@ -30,6 +31,7 @@ class Job(object):
         }
 
         result['options'] = get_options(jobinfo.submit)
+        result['rlimits'] = get_rlimits(jobinfo.submit)
 
         return result
 

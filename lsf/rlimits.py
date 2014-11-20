@@ -3,7 +3,7 @@ from pythonlsf import lsf as api
 import logging
 
 
-__all__ = ['set_rlimits']
+__all__ = ['get_rlimits', 'set_rlimits']
 
 
 LOG = logging.getLogger(__name__)
@@ -29,6 +29,21 @@ _RLIMITS = {
         Limit('virtualMemory', api.LSF_RLIMIT_VMEM),
     ]
 }
+
+
+_REVERSE_RLIMITS = {
+    o.option_index: o.name for o in _RLIMITS.itervalues()
+}
+
+
+def get_rlimits(request):
+    rlimits = {}
+    for index, rlim_val in enumerate(request.rLimits):
+        if rlim_val != api.DEFAULT_RLIMIT:
+            name = _REVERSE_RLIMITS[index]
+            rlimits[name] = rlim_val
+
+    return rlimits
 
 
 def set_rlimits(request, rlimits):
