@@ -50,7 +50,14 @@ class JobTests(unittest.TestCase):
 
     def _verify_job_dict_additional_fields(self, job_dict):
         expected_additional_fields = [
+            'cwd',
+            'fromHost',
+            'jName',
             'jobId',
+            'jobPriority',
+            'subHomeDir',
+            'submitTime',
+            'umask',
         ]
 
         for expected_field in expected_additional_fields:

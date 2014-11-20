@@ -2,6 +2,7 @@ from . import bindings
 from .options import get_options
 from .rlimits import get_rlimits
 import logging
+import string
 
 
 __all__ = ['get_job']
@@ -27,10 +28,11 @@ class Job(object):
         assert self.job_id == jobinfo.jobId
 
         result = {
-            'jobId': self.job_id,
             'statuses': translate_status(jobinfo.status),
             'submit': _request_info(jobinfo.submit),
         }
+
+        result.update(_get_additional_lsf_supplied_fields(jobinfo))
 
         return result
 
@@ -70,3 +72,61 @@ def _request_info(submit):
     result['rlimits'] = get_rlimits(submit)
 
     return result
+
+
+_DIRECT_COPY_FIELDS = [
+    'cwd',
+    'fromHost',
+    'jName',
+    'jobId',
+    'jobPriority',
+    'subHomeDir',
+    'submitTime',
+]
+_TRANSFORM_FIELDS = {
+    'umask': lambda x: string.zfill(x, 4),
+}
+_GREATER_ZERO_FIELDS = [
+    'cpuTime',
+    'endTime',
+    'jobPid',
+    'predictedStartTime',
+    'runTime',
+    'startTime',
+]
+_EXEC_FIELDS = [
+    'exHosts',
+    'execCwd',
+    'execHome',
+    'execRusage',
+    'execUid',
+    'execUsername',
+]
+def _get_additional_lsf_supplied_fields(jobinfo):
+    result = {
+        field: getattr(jobinfo, field) for field in _DIRECT_COPY_FIELDS
+    }
+
+    result.update({
+        field: transform(getattr(jobinfo, field))
+            for field, transform in _TRANSFORM_FIELDS.iteritems()
+    })
+
+
+    result.update({
+        field: getattr(jobinfo, field)
+            for field in _GREATER_ZERO_FIELDS
+            if getattr(jobinfo, field) > 0
+    })
+
+    if _exec_available(jobinfo):
+        result.update({
+            field: getattr(jobinfo, field)
+                for field in _EXEC_FIELDS
+        })
+
+    return result
+
+
+def _exec_available(jobinfo):
+    return jobinfo.execCwd
