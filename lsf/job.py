@@ -26,12 +26,10 @@ class Job(object):
         jobinfo = bindings.get_job_info(self.job_id)
 
         result = {
-            'command': jobinfo.submit.command,
+            'jobId': self.job_id,
             'statuses': translate_status(jobinfo.status),
+            'submit': _request_info(jobinfo.submit),
         }
-
-        result['options'] = get_options(jobinfo.submit)
-        result['rlimits'] = get_rlimits(jobinfo.submit)
 
         return result
 
@@ -60,3 +58,14 @@ def translate_status(status_code):
         return sorted(statuses)
     else:
         return ['NULL']
+
+
+def _request_info(submit):
+    result = {
+        'command': submit.command,
+    }
+
+    result['options'] = get_options(submit)
+    result['rlimits'] = get_rlimits(submit)
+
+    return result

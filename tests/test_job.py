@@ -22,33 +22,41 @@ class JobTests(unittest.TestCase):
         self.assertEqual(self.job, job2)
 
     def test_job_as_dict(self):
-        job_dict = None
-        time.sleep(_INITIAL_WAIT)
-        for attempt in xrange(_MAX_RETRIES):
-            try:
-                job_dict = self.job.as_dict
-                break
-            except lsf.exceptions.InvalidJob:
-                time.sleep(_POLLING_PERIOD)
+        job_dict = _get_job_dict(self.job)
 
-        self.assertEqual(job_dict['command'], 'ls')
+        self._verify_job_dict_statuses(job_dict['statuses'])
+        self._verify_job_dict_submit_portion(job_dict['submit'])
 
-        self.assertGreater(len(job_dict['statuses']), 0)
+    def _verify_job_dict_statuses(self, statuses):
+        self.assertGreater(len(statuses), 0)
         possible_valid_statuses = {'DONE', 'PDONE', 'PEND', 'RUN'}
-        for status in job_dict['statuses']:
+        for status in statuses:
             self.assertIn(status, possible_valid_statuses)
+
+    def _verify_job_dict_submit_portion(self, request_data):
+        self.assertEqual(request_data['command'], 'ls')
 
         expected_options = {
             'numProcessors': 1,
             'maxNumProcessors': 1,
         }
-        self.assertDictContainsSubset(expected_options, job_dict['options'])
+        self.assertDictContainsSubset(expected_options, request_data['options'])
 
         expected_rlimits = {
             'cpuTime': 1,
             'threads': 1,
         }
-        self.assertDictContainsSubset(expected_rlimits, job_dict['rlimits'])
+        self.assertDictContainsSubset(expected_rlimits, request_data['rlimits'])
 
     def test_translate_null_status(self):
         self.assertEqual(job.translate_status(0), ['NULL'])
+
+
+def _get_job_dict(job):
+    time.sleep(_INITIAL_WAIT)
+    for attempt in xrange(_MAX_RETRIES):
+        try:
+            return job.as_dict
+        except lsf.exceptions.InvalidJob:
+            time.sleep(_POLLING_PERIOD)
+    raise RuntimeError('Failed to get job status')
