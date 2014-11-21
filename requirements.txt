@@ -1,1 +1,1 @@
--e git+https://github.com/mark-burnett/pythonlsf.git#egg=pythonlsf
+platform-python-lsf-api >= 0.0.3
